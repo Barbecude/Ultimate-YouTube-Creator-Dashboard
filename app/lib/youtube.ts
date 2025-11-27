@@ -170,7 +170,7 @@ const res = await fetch(
 export async function getRecentVideos(maxResults = 9) {
   // Ganti CHANNEL_ID dengan ID channelmu
   const CHANNEL_ID = process.env.YOUTUBE_CHANNEL_ID; 
-  const API_KEY = process.env.YOUTUBE_API_KEY;
+   const API_KEY = process.env.GOOGLE_API_KEY;
 
   const res = await fetch(
     `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&maxResults=${maxResults}&type=video`,

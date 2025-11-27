@@ -52,7 +52,7 @@ const AnalyticsChart = ({ data }: AnalyticsChartProps) => {
   }
 
   return (
-    <div className="w-full bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+    <div className="w-full bg-white p-6 rounded-xl border border-gray-200 shadow-xs">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-lg font-bold text-gray-800">Performa Channel</h3>
         {/* Indikator total views sederhana */}

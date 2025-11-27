@@ -1,6 +1,7 @@
-// components/VideoCard.tsx
+// components/dashboard/VideoCard.tsx
 import Image from "next/image";
 import Link from "next/link";
+import { Eye, ThumbsUp, MessageSquare, TrendingUp, TrendingDown } from "lucide-react";
 
 // Helper formatter angka (sebaiknya pindahkan ke lib/utils.ts)
 const formatNumber = (num: string | number) => {
@@ -31,14 +32,29 @@ interface VideoCardProps {
   };
 }
 
-export default function VideoCard({ video }: VideoCardProps) {
+
+export default function LatestVideoCard({ video }: VideoCardProps) {
   const { snippet, statistics, id } = video;
+// if (!video || !video.snippet) {
+//     return null; // Atau return <Skeleton /> jika punya loading state
+//   }
+
+  // --- LOGIC PERHITUNGAN RASIO (ENGAGEMENT RATE) ---
+  const views = parseInt(statistics?.viewCount || "0");
+  const likes = parseInt(statistics?.likeCount || "0");
+  const comments = parseInt(statistics?.commentCount || "0");
+
+  // Hitung Rasio: ((Likes + Comments) / Views) * 100
+  // Jika views 0, set rasio ke 0 untuk hindari error division by zero
+  const engagementRate = views > 0 ? ((likes + comments) / views) * 100 : 0;
+  const isGoodPerformance = engagementRate > 1.5;
+
 
   return (
     <Link 
       href={`https://www.youtube.com/watch?v=${id}`} 
       target="_blank" 
-      className="group flex flex-col bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-shadow duration-300"
+      className="group flex flex-col bg-white border border-gray-200 rounded-xl overflow-hidden"
     >
       {/* Bagian Thumbnail */}
       <div className="relative w-full aspect-video overflow-hidden bg-gray-100">
@@ -46,44 +62,58 @@ export default function VideoCard({ video }: VideoCardProps) {
           src={snippet.thumbnails.high?.url || snippet.thumbnails.medium?.url}
           alt={snippet.title}
           fill
-          className="object-cover group-hover:scale-105 transition-transform duration-300"
+          className="object-cover"
         />
       </div>
 
       {/* Bagian Content */}
-      <div className="p-4 flex flex-col flex-1">
-        <h3 className="font-semibold text-gray-900 line-clamp-2 leading-tight mb-2 group-hover:text-blue-600 transition-colors">
-          {snippet.title}
-        </h3>
-        
-        <p className="text-sm text-gray-500 mb-4">
-          {new Date(snippet.publishedAt).toLocaleDateString('id-ID', {
-            day: 'numeric', month: 'short', year: 'numeric'
-          })}
-        </p>
-
+      <div className="p-4 flex justify-between flex-col flex-1">
+        <div>
+            <h3 className="font-semibold text-gray-900 line-clamp-2 leading-tight mb-2 group-hover:underline">
+            {snippet.title}
+            </h3>
+            
+            <p className="text-sm text-gray-500 mb-4">
+            {new Date(snippet.publishedAt).toLocaleDateString('id-ID', {
+                day: 'numeric', month: 'short', year: 'numeric'
+            })}
+            </p>
+        </div>
         {/* Bagian Statistik (Views & Likes) */}
-        <div className="mt-auto flex items-center justify-between pt-3 border-t border-gray-100 text-xs text-gray-600 font-medium">
+        <div className="flex  items-center gap-3 pt-3 border-t border-gray-100 text-xs text-gray-600 font-medium">
           <div className="flex items-center gap-1">
             {/* Icon Mata (Views) */}
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            <Eye size={16} className="text-gray-500" />
             <span>{statistics ? formatNumber(statistics.viewCount) : '-'}</span>
           </div>
-
-          <div className="flex items-center gap-3">
+   
              {/* Icon Like */}
             <div className="flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"/></svg>
+            <ThumbsUp size={16} className="text-gray-500" />
               <span>{statistics ? formatNumber(statistics.likeCount) : '-'}</span>
             </div>
             
             {/* Icon Comment */}
             <div className="flex items-center gap-1">
-               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                   <MessageSquare size={16} className="text-gray-500" />
                <span>{statistics ? formatNumber(statistics.commentCount) : '-'}</span>
             </div>
-          </div>
+
+   {statistics && (
+            <div className={`flex text-end items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold ml-auto ${
+                isGoodPerformance 
+                ? "bg-green-50 text-green-700"
+                : "bg-red-50 text-red-700"
+            }`}>
+                {isGoodPerformance ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                Eng. Rate
+                <span>{engagementRate.toFixed(1)}%</span>
+            </div>
+            )}
+
+     {/* --- BADGE PERFORMA BARU --- */}
         </div>
+        
       </div>
     </Link>
   );

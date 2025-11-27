@@ -6,7 +6,7 @@ import {
   getVideoStatistics, 
   getComments, 
   getTotalViewsAnalytics,
-  // getRecentVideos
+  getRecentVideos
 } from "./lib/youtube";
 
 import { enrichVideosWithDetails } from "./lib/youtube.helpers";
@@ -16,6 +16,7 @@ import AuthProfile from "@/components/AuthProfile";
 import StatCard from "@/components/dashboard/StatCard";
 import PopularVideoCard from "@/components/dashboard/PopularVideoCard";
 import AnalyticsChart from "@/components/dashboard/TotalViewsAnalyticsChart";
+import LatestVideoCard from "@/components/dashboard/LatestVideoCard";
 
 // --- Utility: Formatter Angka ---
 const formatNumber = (num: string | number) => {
@@ -68,8 +69,8 @@ export default async function Home() {
   
   // Kode di dalam komponen jadi sangat bersih 👇
   const { channelStats, analyticsData, combinedVideos } = await getDashboardData(session?.accessToken);
-  // const recentVideosRaw = await getRecentVideos();
-  // const allVideosComplete = await enrichVideosWithDetails(recentVideosRaw);
+  const recentVideosRaw = await getRecentVideos();
+  const allVideosComplete = await enrichVideosWithDetails(recentVideosRaw);
   return (
     <main>
       <h1 className="text-2xl font-bold mb-4">YouTube Dashboard 🚀</h1>
@@ -77,7 +78,7 @@ export default async function Home() {
       <hr className="my-8" />
 
       {/* Bagian Statistik Utama */}
-      <section className="flex flex-col sm:flex-row bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden divide-y divide-gray-200 sm:divide-y-0 sm:divide-x mb-6">
+      <section className="flex flex-col sm:flex-row bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden divide-y divide-gray-200 sm:divide-y-0 sm:divide-x mb-6">
         <StatCard title="Subscribers" value={formatNumber(channelStats.subscriberCount)} />
         <StatCard title="Total Views" value={formatNumber(channelStats.viewCount)} />
         <StatCard title="Video Uploaded" value={formatNumber(channelStats.videoCount)} />
@@ -108,12 +109,12 @@ export default async function Home() {
       </section>
 
       <section>
-        {/* <div className="grid grid-cols-3 gap-4">
+        <div className="grid sm:grid-cols-3 gap-4">
       {allVideosComplete.map(video => (
         // Component Card yang sama bisa dipakai
-        <VideoCard key={video.id} data={video} /> 
+       <LatestVideoCard key={video.id} video={video} />
       ))}
-    </div> */}
+    </div>
       </section>
     </main>
   );
