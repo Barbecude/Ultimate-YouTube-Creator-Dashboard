@@ -10,7 +10,7 @@ import {
 } from "./lib/youtube";
 
 //private data
-import {getGeoAnalytics, getTotalViewsAnalytics, getVideoAnalytics} from "./lib/youtube-analytics"
+import {getRevenue, getGeoAnalytics, getTotalViewsAnalytics, getVideoAnalytics} from "./lib/youtube-analytics"
 
 // Components
 import AuthProfile from "@/components/AuthProfile";
@@ -20,13 +20,13 @@ import AnalyticsChart from "@/components/dashboard/TotalViewsAnalyticsChart";
 import LatestVideoCard from "@/components/dashboard/LatestVideoCard";
 import GeoMap from "@/components/dashboard/GeoMap";
 
-
-// --- Logic: Data Fetching ---
 // --- Logic: Data Fetching ---
 async function getDashboardData(accessToken?: string) {
   // --- TAHAP 1: Ambil data Channel & List Video ---
-  const [channelStats, popularVideosRaw, analyticsData, geoData] = await Promise.all([
+const [channelStats, totalRevenue, popularVideosRaw, analyticsData, geoData] = await Promise.all([
     getChannelStatistics(),
+    // 👇 UBAH INI: return string "Rp 0" agar konsisten dengan tipe data getRevenue
+    accessToken ? getRevenue(accessToken) : Promise.resolve("Rp 0"), 
     getMostPopularVideos(),
     accessToken ? getTotalViewsAnalytics(accessToken) : Promise.resolve([]),
     accessToken ? getGeoAnalytics(accessToken) : Promise.resolve([]) 
@@ -63,15 +63,17 @@ async function getDashboardData(accessToken?: string) {
     console.log(videoAnalytics)
   }
 
-  return { channelStats, analyticsData, combinedVideos, geoData };
+  return { channelStats, analyticsData, combinedVideos, geoData, totalRevenue };
 }
+     
 
 // --- Main Component ---
 export default async function Home() {
   const session: any = await getServerSession(authOptions);
   
   // 1. Ambil Data Dashboard (Channel, Popular, Chart)
-  const { channelStats, analyticsData, combinedVideos, geoData } = await getDashboardData(session?.accessToken);
+  const { channelStats, totalRevenue, analyticsData, combinedVideos, geoData } = await getDashboardData(session?.accessToken);
+  console.log(totalRevenue)
   
   // 2. Ambil Data Recent Videos (Terpisah)
   const recentVideosRaw = await getRecentVideos();
@@ -88,6 +90,7 @@ export default async function Home() {
         <StatCard title="Subscribers" value={channelStats.subscriberCount} />
         <StatCard title="Total Views" value={channelStats.viewCount} />
         <StatCard title="Video Uploaded" value={channelStats.videoCount} />
+        <StatCard title="Total Revenue" value={totalRevenue} />
       </section>
 
     <div className="grid grid-cols-1 2xl:grid-cols-2 gap-5 mb-8">

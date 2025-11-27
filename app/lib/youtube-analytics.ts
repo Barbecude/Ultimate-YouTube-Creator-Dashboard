@@ -1,4 +1,54 @@
 // lib/youtube-analytics.ts
+// app/lib/youtube-analytics.ts
+export async function getRevenue(accessToken: string): Promise<string> {
+  // Hardcoded exchange rate for simple conversion (USD is usually the source currency)
+  const EXCHANGE_RATE = 16200; 
+  
+  try {
+    const end = new Date();
+    // Mundur 2 hari (delay wajar data revenue)
+    end.setDate(end.getDate() - 2); 
+    const endDate = end.toISOString().split("T")[0];
+
+    // Params for YouTube Analytics API
+    const params = new URLSearchParams({
+      ids: "channel==MINE",
+      startDate: "2021-01-01", 
+      endDate: endDate,
+      metrics: "estimatedRevenue",
+      dimensions: "day", 
+    });
+
+    const res = await fetch(
+      `https://youtubeanalytics.googleapis.com/v2/reports?${params}`,
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+
+    if (!res.ok) throw new Error(await res.text());
+
+    const data = await res.json();
+
+    // 1. Hitung total raw (kemungkinan dalam USD, karena angkanya kecil)
+    const totalRaw = data.rows?.reduce((acc: number, curr: any[]) => acc + (curr[1] || 0), 0) || 0;
+    
+    // 2. Konversi ke IDR
+    const totalIDR = totalRaw * EXCHANGE_RATE;
+
+    // 3. Format hasil konversi
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+      // FIX: Menggunakan 'code' untuk menampilkan IDR, bukan 'symbol' (Rp)
+      currencyDisplay: 'code', 
+    }).format(totalIDR);
+
+  } catch (error) {
+    console.error("Revenue Error:", error);
+    return "IDR 0"; // Mengubah default error return ke IDR
+  }
+}
 
 export async function getGeoAnalytics(accessToken: string) {
   if (!accessToken) return [];

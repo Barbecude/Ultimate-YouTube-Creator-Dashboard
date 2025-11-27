@@ -29,7 +29,7 @@ export const authOptions: AuthOptions = {
       authorization: {
         params: {
           // Scope YouTube & Analytics sudah benar
-          scope: "openid email profile https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/yt-analytics.readonly",
+          scope: "openid email profile https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/yt-analytics.readonly https://www.googleapis.com/auth/yt-analytics-monetary.readonly",
           prompt: "consent",
           access_type: "offline",
           response_type: "code"

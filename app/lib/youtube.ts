@@ -22,35 +22,7 @@ export async function getChannelStatistics() {
  
 }
 
-export async function getRevenue(accessToken: string) {
-  // 1. Tentukan rentang waktu (misal: 30 hari terakhir)
-  const endDate = new Date().toISOString().split("T")[0];
-  const startDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-    .toISOString()
-    .split("T")[0];
 
-  // 2. Panggil API
-  const params = new URLSearchParams({
-    ids: "channel==MINE",
-    startDate: startDate,
-    endDate: endDate,
-    metrics: "estimatedRevenue", 
-    dimensions: "day",
-    sort: "day",
-  });
-
-  const res = await fetch(
-    `https://youtubeanalytics.googleapis.com/v2/reports?${params}`,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
-
-  const data = await res.json();
-  return data;
-}
 
 export async function getMostPopularVideos() {
   const API_KEY = process.env.GOOGLE_API_KEY;
