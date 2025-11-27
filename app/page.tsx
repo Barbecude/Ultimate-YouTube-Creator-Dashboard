@@ -90,7 +90,6 @@ export default async function Home() {
       <main>
         <h1 className="text-2xl font-bold mb-4">YouTube Dashboard 🚀</h1>
         <AuthProfile />
-        <hr className="my-8" />
         <DashboardWrapper initialData={initialData} defaultChannelId={defaultChannelId} />
       </main>
     </ChannelProvider>

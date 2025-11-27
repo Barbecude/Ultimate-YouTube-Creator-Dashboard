@@ -71,6 +71,7 @@ export function DashboardWrapper({ initialData, defaultChannelId }: DashboardWra
       {/* Bagian Statistik Utama */}
       <section
         className="
+          mt-6
           grid grid-cols-2
           sm:flex sm:flex-row
           bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden
