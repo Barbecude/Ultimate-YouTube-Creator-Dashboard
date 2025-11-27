@@ -1,7 +1,7 @@
 import Image from 'next/image';
-import { BarChart2, MessageSquare, ThumbsUp } from 'lucide-react';
-
-export default function PopularVideoCard({ video, formatNumber }: any) {
+import { BarChart2, MessageSquare, ThumbsUp, Lock, AlertCircle } from 'lucide-react';
+import { formatDuration, formatNumber } from '@/app/lib/formaters';
+export default function PopularVideoCard({ video }: any) {
   // --- BAGIAN 1: PERSIAPAN DATA ---
   // Kita bongkar dulu datanya di atas supaya di bawah tinggal panggil variabelnya.
   // Ini memudahkan pemula untuk melihat data apa saja yang tersedia.
@@ -14,6 +14,8 @@ export default function PopularVideoCard({ video, formatNumber }: any) {
   const formattedDate = new Date(snippet.publishedAt).toLocaleDateString('en-US', { 
     dateStyle: 'medium' 
   });
+
+
 
   // --- BAGIAN 2: TAMPILAN (UI) ---
   return (
@@ -94,21 +96,43 @@ export default function PopularVideoCard({ video, formatNumber }: any) {
         {/* ================================== */}
         <div className='flex flex-col flex-1'>
           
-          {/* 1. Baris Statistik Tambahan */}
-          <div className="space-y-1 mb-5">
-            <div className='flex justify-between'>
-              <h5>Penayangan</h5> 
-              <span>{formatNumber(statistics?.viewCount)}</span>
-            </div>
-            <div className='flex justify-between'>
-              <h5>Rasio klik-tayang</h5> 
-              <span>0%</span>
-            </div>
-            <div className='flex justify-between'>
-              <h5>Rata-rata durasi</h5> 
-              <span>8.41</span>
-            </div>
+<div className="space-y-3 mb-5">
+  {/* Public Data - Views */}
+  <div className='flex justify-between items-center'>
+    <h5>Views</h5>
+    <span>{formatNumber(statistics?.viewCount)}</span>
+  </div>
+
+          {/* Private Data - Click Ratio */}
+          <div className='flex justify-between items-center'>
+            <h5>Click Ratio</h5>
+            {video.privateStats ? (
+              // Jika Login: Tampilkan Angka
+              <span>{(video.privateStats.clickRatio * 100).toFixed(1)}%</span>
+            ) : (
+              // Jika Belum Login: Tampilkan Badge
+              <div className="flex items-center gap-1.5 px-2 py-1 text-[10px] font-medium text-gray-600 bg-gray-100 rounded-md ">
+                <Lock className="w-3 h-3" />
+                <span>Login to see Deep analytics</span>
+              </div>
+            )}
           </div>
+
+          {/* Private Data - Duration */}
+          <div className='flex justify-between items-center'>
+            <h5>Average watched duration</h5>
+            {video.privateStats ? (
+              // Jika Login: Tampilkan Angka
+              <span>{formatDuration(video.privateStats.averageViewDuration)}</span>
+            ) : (
+              // Jika Belum Login: Tampilkan Badge
+              <div className="flex items-center gap-1.5 px-2 py-1 text-[10px] font-medium text-gray-600 bg-gray-100 rounded-md ">
+                <Lock className="w-3 h-3" />
+                <span>Login to see Deep analytics</span>
+              </div>
+            )}
+          </div>
+        </div>
 
           {/* 2. List Komentar */}
           <div>

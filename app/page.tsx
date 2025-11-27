@@ -10,7 +10,7 @@ import {
 } from "./lib/youtube";
 
 //private data
-import {getGeoAnalytics, getTotalViewsAnalytics} from "./lib/youtube-analytics"
+import {getGeoAnalytics, getTotalViewsAnalytics, getVideoAnalytics} from "./lib/youtube-analytics"
 
 // Components
 import AuthProfile from "@/components/AuthProfile";
@@ -20,29 +20,48 @@ import AnalyticsChart from "@/components/dashboard/TotalViewsAnalyticsChart";
 import LatestVideoCard from "@/components/dashboard/LatestVideoCard";
 import GeoMap from "@/components/dashboard/GeoMap";
 
-// --- Utility: Formatter Angka ---
-const formatNumber = (num: string | number) => {
-  const val = typeof num === 'string' ? parseInt(num) : num;
-  if (isNaN(val)) return '0';
-  
-  return new Intl.NumberFormat('en-US', {
-    notation: "compact", 
-    compactDisplay: "short", 
-    maximumFractionDigits: 1
-  }).format(val);
-};
 
 // --- Logic: Data Fetching ---
+// --- Logic: Data Fetching ---
 async function getDashboardData(accessToken?: string) {
+  // --- TAHAP 1: Ambil data Channel & List Video ---
   const [channelStats, popularVideosRaw, analyticsData, geoData] = await Promise.all([
     getChannelStatistics(),
     getMostPopularVideos(),
     accessToken ? getTotalViewsAnalytics(accessToken) : Promise.resolve([]),
     accessToken ? getGeoAnalytics(accessToken) : Promise.resolve([]) 
-    
   ]);
 
-  const combinedVideos = await enrichVideosWithDetails(popularVideosRaw);
+  // --- TAHAP 2: Siapkan ID Video Populer Pertama (PERBAIKAN DISINI) ---
+  const firstVideo = popularVideosRaw?.[0];
+  let firstVideoId = "";
+
+  if (firstVideo) {
+    // Cek apakah ID-nya berbentuk Object (Search API) atau String (Video API)
+    if (typeof firstVideo.id === 'object' && firstVideo.id !== null) {
+       firstVideoId = firstVideo.id.videoId; // Ambil .videoId
+    } else {
+       firstVideoId = firstVideo.id; // Ambil string langsung
+    }
+  }
+
+  // --- TAHAP 3: Fetch Detail Video & Analytics Video secara Paralel ---
+  const [videoAnalytics, combinedVideos] = await Promise.all([
+    // Ambil Analytics Video (Cuma kalau ada token & ada videonya)
+    // firstVideoId sekarang dijamin string bersih, bukan object
+    (accessToken && firstVideoId) 
+      ? getVideoAnalytics(accessToken, firstVideoId) 
+      : Promise.resolve(null),
+
+    // Sekalian ambil detail komentar, dll (enrich)
+    enrichVideosWithDetails(popularVideosRaw)
+  ]);
+
+  // --- TAHAP 4: Gabungkan Analytics ke dalam Video Pertama ---
+  if (combinedVideos.length > 0 && videoAnalytics) {
+    (combinedVideos[0] as any).privateStats = videoAnalytics;
+    console.log(videoAnalytics)
+  }
 
   return { channelStats, analyticsData, combinedVideos, geoData };
 }
@@ -66,19 +85,19 @@ export default async function Home() {
 
       {/* Bagian Statistik Utama */}
       <section className="flex flex-col sm:flex-row bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden divide-y divide-gray-200 sm:divide-y-0 sm:divide-x mb-6">
-        <StatCard title="Subscribers" value={formatNumber(channelStats.subscriberCount)} />
-        <StatCard title="Total Views" value={formatNumber(channelStats.viewCount)} />
-        <StatCard title="Video Uploaded" value={formatNumber(channelStats.videoCount)} />
+        <StatCard title="Subscribers" value={channelStats.subscriberCount} />
+        <StatCard title="Total Views" value={channelStats.viewCount} />
+        <StatCard title="Video Uploaded" value={channelStats.videoCount} />
       </section>
 
     <div className="grid grid-cols-1 2xl:grid-cols-2 gap-5 mb-8">
       {/* Bagian Popular Videos */}
-      <section className="space-y-4">  
+      <section>  
         {combinedVideos.map((video: any) => (
           <PopularVideoCard 
             key={video.id} // ID sekarang sudah bersih (string)
             video={video} 
-            formatNumber={formatNumber} 
+            privateStats={video}
           />
         ))}
       </section>
@@ -100,7 +119,6 @@ export default async function Home() {
       <div className="grid grid-cols-1 2xl:grid-cols-12 gap-5">
         {/* Kolom Kiri: Chart */}
         <section className="md:col-span-5">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">Analytics Overview</h2>
           {session?.accessToken ? (
             <AnalyticsChart data={analyticsData} />
           ) : (

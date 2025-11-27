@@ -84,3 +84,45 @@ const res = await fetch(
   return chartData;
   
 }
+
+export async function getVideoAnalytics(accessToken: string, videoId: string) {
+  if (!accessToken) return null;
+
+  // GANTI METRIC: Hapus annotationClickThroughRate, ganti jadi averageViewPercentage
+  const metrics = "averageViewDuration,averageViewPercentage"; 
+
+  const url = `https://youtubeanalytics.googleapis.com/v2/reports?` +
+    `ids=channel==MINE&` +
+    `metrics=${metrics}&` +
+    `startDate=2020-01-01&endDate=${new Date().toISOString().split('T')[0]}&` +
+    `filters=video==${videoId}`;
+
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  const data = await res.json();
+  
+  // --- DEBUGGING: TAMBAHKAN INI ---
+  // Lihat terminal VSCode kamu saat refresh halaman
+  if (data.error) {
+    console.error("🔥 YOUTUBE ANALYTICS ERROR:", JSON.stringify(data.error, null, 2));
+    return { averageViewDuration: 0, clickRatio: 0 };
+  }
+  
+  if (!data.rows || data.rows.length === 0) {
+    console.warn("⚠️ DATA KOSONG (Mungkin video baru upload < 48 jam?) ID:", videoId);
+    return { averageViewDuration: 0, clickRatio: 0 };
+  }
+  // --------------------------------
+
+  // Format return
+  // averageViewPercentage biasanya return angka 0-100 (misal 45.5)
+  // Kita bagi 100 biar jadi desimal (0.455) agar sesuai format persen di componentmu
+  return {
+    averageViewDuration: data.rows[0][0], // Detik
+    clickRatio: data.rows[0][1] / 100     // Persen Retensi (pengganti CTR)
+  };
+}
