@@ -87,7 +87,7 @@ export default function GeoMap({ data }: GeoMapProps) {
           >
             <Geographies geography={GEO_URL}>
               {({ geographies }: any) =>
-                geographies.map((geo) => {
+                geographies.map((geo: any) => {
                   const geoId = geo.id || geo.properties?.iso_a3 || geo.properties?.ISO_A3;
                   const geoName = geo.properties?.name || "Unknown";
                   const cur = findData(geoId, geoName);
