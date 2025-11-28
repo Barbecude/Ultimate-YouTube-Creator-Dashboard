@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useMemo, useState } from "react";
@@ -82,7 +83,7 @@ export default function GeoMap({ data }: GeoMapProps) {
           <ZoomableGroup 
             zoom={position.zoom} 
             center={position.coordinates as [number, number]} 
-            onMoveEnd={(pos) => setPosition(pos)}
+            onMoveEnd={(pos: any) => setPosition(pos)}
           >
             <Geographies geography={GEO_URL}>
               {({ geographies }) =>
