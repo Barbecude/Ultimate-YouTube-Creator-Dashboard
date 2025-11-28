@@ -19,10 +19,8 @@ export default function GeoMap({ data }: GeoMapProps) {
 
   const colorScale = useMemo(() => {
     const maxVal = Math.max(...data.map((d) => d.value), 0);
-    return scaleLinear<string>()
+      return scaleLinear()
       .domain([0, maxVal])
-      // --- PERUBAHAN WARNA 1 (Logic Peta) ---
-      // Dari warna merah sangat pudar (#ffe5e5) ke Merah YouTube (#FF0000)
       .range(["#ffe5e5", "#FF0000"]);
   }, [data]);
 
