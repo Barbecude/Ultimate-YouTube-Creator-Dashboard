@@ -86,7 +86,7 @@ export default function GeoMap({ data }: GeoMapProps) {
             onMoveEnd={(pos: any) => setPosition(pos)}
           >
             <Geographies geography={GEO_URL}>
-              {({ geographies }) =>
+              {({ geographies }: any) =>
                 geographies.map((geo) => {
                   const geoId = geo.id || geo.properties?.iso_a3 || geo.properties?.ISO_A3;
                   const geoName = geo.properties?.name || "Unknown";
