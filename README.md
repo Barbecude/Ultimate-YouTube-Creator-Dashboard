@@ -129,9 +129,8 @@ Contributions are what make the open-source community such an amazing place to l
 
 **Your Name**
 
-* YouTube: [@YourChannel](https://youtube.com/@yourchannel)
-* LinkedIn: [Your Profile](https://linkedin.com/in/yourprofile)
-* GitHub: [@YourUsername](https://github.com/yourusername)
+* YouTube: [@YourChannel](https://youtube.com/@barbecude)
+* GitHub: [@YourUsername](https://github.com/Barbecude)
 
 ---
 
