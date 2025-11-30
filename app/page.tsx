@@ -27,7 +27,6 @@ const [channelStats, totalRevenue, popularVideosRaw, analyticsData, geoData] = a
     accessToken ? getTotalViewsAnalytics(accessToken) : Promise.resolve([]),
     accessToken ? getGeoAnalytics(accessToken) : Promise.resolve([]) 
   ]);
-
   // --- TAHAP 2: Siapkan ID Video Populer Pertama (PERBAIKAN DISINI) ---
   const firstVideo = popularVideosRaw?.[0];
   let firstVideoId = "";

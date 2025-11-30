@@ -1,5 +1,4 @@
-
-  const API_KEY = process.env.GOOGLE_API_KEY 
+const API_KEY = process.env.GOOGLE_API_KEY 
 
 
 export async function getChannelStatistics(channelId: string) {
@@ -18,8 +17,6 @@ export async function getChannelStatistics(channelId: string) {
   return data.items[0].statistics;
  
 }
-
-
 
 export async function getMostPopularVideos(channelId: string) {
   const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&order=viewCount&type=video&maxResults=1&key=${API_KEY}`;

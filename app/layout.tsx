@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google"; // 1. Hapus import Geist
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "../components/Providers";
-
-// 2. Hapus definisi geistSans dan geistMono
+import { Sidebar } from "../components/Sidebar"; // Import the sidebar
 
 const inter = Inter({
   variable: "--font-inter-sans",
@@ -22,12 +21,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        // 3. Gunakan hanya variabel Inter di sini
-        className={`${inter.variable} antialiased`}
-      >
+      <body className={`${inter.variable} antialiased font-sans bg-white`}>
         <Providers>
-          {children}
+          {/* Main Flex Container */}
+          <div className="flex h-screen overflow-hidden">
+            
+            {/* Left Sidebar */}
+            <Sidebar />
+
+            {/* Right Content Area */}
+            <main className="flex-1 overflow-y-auto">
+              <div className="p-8">
+                 {children}
+              </div>
+            </main>
+
+          </div>
         </Providers>
       </body>
     </html>
