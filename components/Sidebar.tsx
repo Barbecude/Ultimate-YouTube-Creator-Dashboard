@@ -1,21 +1,23 @@
 // components/Sidebar.tsx
+'use client';
+
 import Link from "next/link";
-import {  LayoutGrid, Server, Activity, Globe,  BarChart3, Settings,LogOut,  Github, Star} from "lucide-react";
-import { getChannelStatistics, } from "@/app/lib/youtube";
-export async function Sidebar() {
+import { usePathname } from "next/navigation";
+import { LayoutGrid, Server, Activity, Globe, BarChart3, Settings, LogOut, Github, Star } from "lucide-react";
 
-
+export function Sidebar() {
+  const pathname = usePathname();
 
   return (
     <aside className="w-[280px] h-screen bg-gray-50/50 border-r border-gray-200 flex flex-col sticky top-0">
-      
+
       {/* 1. Profile Section */}
       <div className="p-4 mb-4">
         <div className="flex items-center gap-3 px-2">
           <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-white font-bold">
-            <img 
-              src="https://avatar.vercel.sh/channelc" 
-              alt="Avatar" 
+            <img
+              src="https://avatar.vercel.sh/channelc"
+              alt="Avatar"
               className="w-10 h-10 rounded-full"
             />
           </div>
@@ -27,15 +29,15 @@ export async function Sidebar() {
       </div>
 
       <div className="flex-1 overflow-y-auto px-3 py-2 space-y-6">
-        
+
         {/* 2. Navigation Section */}
         <div>
-        <nav className="space-y-0.5">
-            <NavItem href="/" icon={<LayoutGrid size={18} />} label="Overview" active />
-            <NavItem href="/videos" icon={<Server size={18} />} label="All Videos" />
-            <NavItem href="/analytics" icon={<Activity size={18} />} label="Deep Analytics" />
-            <NavItem href="/customize" icon={<Globe size={18} />} label="Customize Channel" />
-            <NavItem href="/revenue" icon={<BarChart3 size={18} />} label="Revenue" />
+          <nav className="space-y-0.5">
+            <NavItem href="/" icon={<LayoutGrid size={18} />} label="Overview" active={pathname === "/"} />
+            <NavItem href="/allvideos" icon={<Server size={18} />} label="All Videos" active={pathname === "/allvideos"} />
+            <NavItem href="/analytics" icon={<Activity size={18} />} label="Deep Analytics" active={pathname === "/analytics"} />
+            <NavItem href="/customize" icon={<Globe size={18} />} label="Customize Channel" active={pathname === "/customize"} />
+            <NavItem href="/revenue" icon={<BarChart3 size={18} />} label="Revenue" active={pathname === "/revenue"} />
           </nav>
         </div>
 
@@ -53,7 +55,7 @@ export async function Sidebar() {
 
       </div>
       <div className="p-3 border-t border-gray-200 mt-auto space-y-1">
-        
+
         {/* GitHub Rate */}
         <Link
           href="https://github.com/yourusername/project"
@@ -72,12 +74,12 @@ export async function Sidebar() {
         </Link>
 
         {/* Settings (Moved here) */}
-        <NavItem href="/settings" icon={<Settings size={18} />} label="Settings" />
+        <NavItem href="/settings" icon={<Settings size={18} />} label="Settings" active={pathname === "/settings"} />
 
         {/* Logout */}
-        <button 
+        <button
           className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors text-left"
-          
+
         >
           <LogOut size={18} />
           Log out
@@ -94,8 +96,8 @@ function NavItem({ href, icon, label, active = false }: { href: string; icon: an
       href={href}
       className={`
         flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors
-        ${active 
-          ? "bg-gray-100 text-gray-900" 
+        ${active
+          ? "bg-gray-100 text-gray-900"
           : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"}
       `}
     >

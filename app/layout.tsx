@@ -19,20 +19,22 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const defaultChannelId = process.env.YOUTUBE_CHANNEL_ID || '';
+
   return (
     <html lang="en">
       <body className={`${inter.variable} antialiased font-sans bg-white`}>
-        <Providers>
+        <Providers initialChannelId={defaultChannelId}>
           {/* Main Flex Container */}
           <div className="flex h-screen overflow-hidden">
-            
+
             {/* Left Sidebar */}
             <Sidebar />
 
             {/* Right Content Area */}
             <main className="flex-1 overflow-y-auto">
               <div className="p-8">
-                 {children}
+                {children}
               </div>
             </main>
 
