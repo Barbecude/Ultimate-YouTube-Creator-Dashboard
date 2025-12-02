@@ -14,7 +14,7 @@ import { getRevenue, getGeoAnalytics, getTotalViewsAnalytics, getVideoAnalytics 
 // Components
 import AuthProfile from "@/components/AuthProfile";
 import { DashboardWrapper } from "@/components/DashboardWrapper";
-;
+import { PageHeader } from "@/components/ui/page-header";
 
 // --- Logic: Data Fetching ---
 async function getDashboardData(channelId: string, accessToken?: string) {
@@ -84,10 +84,15 @@ export default async function Home() {
   };
 
   return (
-    <main>
-      <h1 className="text-2xl font-bold mb-4">YouTube Dashboard 🚀</h1>
+    <>
+      {/* Header Section */}
+      <PageHeader 
+        title="Dashboard" 
+        description="A quick overview of your channel's performance." 
+      />
+
       <AuthProfile />
       <DashboardWrapper initialData={initialData} defaultChannelId={defaultChannelId} />
-    </main>
+    </>
   );
 }

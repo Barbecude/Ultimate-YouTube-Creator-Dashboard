@@ -1,186 +1,168 @@
+'use client';
+
 import Image from 'next/image';
-import { BarChart2, MessageSquare, ThumbsUp, Lock, AlertCircle } from 'lucide-react';
-import { formatDuration, formatNumber } from '@/app/lib/formaters';
-export default function PopularVideoCard({ video }: any) {
-  // --- BAGIAN 1: PERSIAPAN DATA ---
-  // Kita bongkar dulu datanya di atas supaya di bawah tinggal panggil variabelnya.
-  // Ini memudahkan pemula untuk melihat data apa saja yang tersedia.
+import { formatNumber } from '@/app/lib/formaters';
+import { MessageSquare, ThumbsUp, BarChart2, Eye } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+
+interface PopularVideoCardProps {
+  video: any;
+}
+
+export default function PopularVideoCard({ video }: PopularVideoCardProps) {
+  if (!video) return null;
+
   const snippet = video.snippet;
   const statistics = video.statistics;
-  const comments = video.comments;
-  
-  // Buat URL Video dan Tanggal
-  const videoUrl = `https://www.youtube.com/watch?v=${video.id.videoId}`;
-  const formattedDate = new Date(snippet.publishedAt).toLocaleDateString('en-US', { 
-    dateStyle: 'medium' 
-  });
+  const videoUrl = `https://www.youtube.com/watch?v=${video.id.videoId || video.id}`;
 
-
-
-  // --- BAGIAN 2: TAMPILAN (UI) ---
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-xs">
-      
-      {/* Judul Section */}
-      <h3 className="font-bold text-lg text-gray-900 mb-5">Popular Video</h3>
-      
-      {/* Container Utama (Flexbox): Kiri (Video) & Kanan (Statistik/Komen) */}
-      <div className="flex flex-col md:flex-row gap-6 md:gap-8">
-        
-        {/* ========================== */}
-        {/* KOLOM KIRI: Video & Stats  */}
-        {/* ========================== */}
-        <div className="flex-1 flex flex-col gap-4 max-w-md shrink-0">
-          
-          {/* 1. Gambar Thumbnail */}
-          <a href={videoUrl} target="_blank" className="relative w-full aspect-video rounded-xl overflow-hidden bg-gray-100 shadow-xs group">
-            <Image 
-              src={snippet.thumbnails.high.url} 
-              alt={snippet.title} 
-              fill 
-              className="object-cover" 
-            />
-          </a>
-          
-          {/* 2. Judul Video & Tanggal */}
+    <Card>
+      <CardHeader>
+        <CardTitle>Popular Video</CardTitle>
+        <CardDescription>for the last 7 days</CardDescription>
+      </CardHeader>
+
+      <CardContent>
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Left: Video Info + Stats */}
           <div>
-            <a href={videoUrl} target="_blank">
-              <h4 className="font-bold text-base md:text-lg text-black leading-tight line-clamp-2 hover:underline">
-                {snippet.title}
-              </h4>
+            {/* Thumbnail */}
+            <a
+              href={videoUrl}
+              target="_blank"
+              className="relative w-full aspect-video rounded-lg overflow-hidden bg-gray-100 block mb-4"
+            >
+              <Image
+                src={snippet.thumbnails.high.url}
+                alt={snippet.title}
+                fill
+                className="object-cover"
+              />
             </a>
-            <p className="text-sm text-gray-500 mt-1">Uploaded on {formattedDate}</p>
-          </div>
 
-          {/* 3. Tiga Statistik Utama (Ditulis manual agar mudah diedit satu per satu) */}
-          <div className="flex justify-between md:justify-start md:gap-16 pt-2">
-            
-            {/* -- Views -- */}
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2 text-sm font-medium text-gray-400">
-                <BarChart2 size={18} /> 
-                <span>Views</span>
-              </div>
-              <span className="text-xl font-extrabold text-gray-900 leading-none">
-                {formatNumber(statistics?.viewCount)}
-              </span>
+            {/* Title & Date */}
+            <div className="mb-3">
+              <a href={videoUrl} target="_blank">
+                <h3 className="font-semibold text-sm text-gray-900 hover:underline line-clamp-2 mb-1">
+                  {snippet.title}
+                </h3>
+              </a>
+              <p className="text-xs text-gray-500">
+                Published {new Date(snippet.publishedAt).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric'
+                })}
+              </p>
             </div>
 
-            {/* -- Likes -- */}
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2 text-sm font-medium text-gray-400">
-                <ThumbsUp size={18} /> 
-                <span>Likes</span>
+            {/* Stats with Icons - 4 Grid */}
+            <div className="grid grid-cols-4 gap-4 mb-4">
+              {/* Views */}
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-1">
+                  <Eye className="w-4 h-4 text-gray-400" />
+                  <div className="text-xs text-gray-500">Views</div>
+                </div>
+                <div className="text-lg font-bold text-gray-900">
+                  {formatNumber(statistics?.viewCount)}
+                </div>
               </div>
-              <span className="text-xl font-extrabold text-gray-900 leading-none">
-                {formatNumber(statistics?.likeCount)}
-              </span>
+
+              {/* Likes */}
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-1">
+                  <ThumbsUp className="w-4 h-4 text-gray-400" />
+                  <div className="text-xs text-gray-500">Likes</div>
+                </div>
+                <div className="text-lg font-bold text-gray-900">
+                  {formatNumber(statistics?.likeCount)}
+                </div>
+              </div>
+
+              {/* Comments */}
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-1">
+                  <MessageSquare className="w-4 h-4 text-gray-400" />
+                  <div className="text-xs text-gray-500">Comments</div>
+                </div>
+                <div className="text-lg font-bold text-gray-900">
+                  {formatNumber(statistics?.commentCount)}
+                </div>
+              </div>
+
+              {/* Audience Retention */}
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-1">
+                  <BarChart2 className="w-4 h-4 text-gray-400" />
+                  <div className="text-xs text-gray-500">Retention</div>
+                </div>
+                <div className="text-lg font-bold text-gray-900">
+                  {video.privateStats ?
+                    `${(video.privateStats.clickRatio * 100).toFixed(1)}%` :
+                    '0%'
+                  }
+                </div>
+              </div>
             </div>
 
-            {/* -- Comments Count -- */}
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2 text-sm font-medium text-gray-400">
-                <MessageSquare size={18} /> 
-                <span>Comments</span>
-              </div>
-              <span className="text-xl font-extrabold text-gray-900 leading-none">
-                {formatNumber(statistics?.commentCount)}
-              </span>
-            </div>
-
-          </div>
-        </div>
-
-        {/* ================================== */}
-        {/* KOLOM KANAN: Detail & List Komen */}
-        {/* ================================== */}
-        <div className='flex flex-col flex-1'>
-          
-<div className="space-y-3 mb-5">
-  {/* Public Data - Views */}
-  <div className='flex justify-between items-center'>
-    <h5>Views</h5>
-    <span>{formatNumber(statistics?.viewCount)}</span>
-  </div>
-
-          {/* Private Data - Click Ratio */}
-          <div className='flex justify-between items-center'>
-            <h5>Click Ratio</h5>
-            {video.privateStats ? (
-              // Jika Login: Tampilkan Angka
-              <span>{(video.privateStats.clickRatio * 100).toFixed(1)}%</span>
-            ) : (
-              // Jika Belum Login: Tampilkan Badge
-              <div className="flex items-center gap-1.5 px-2 py-1 text-[10px] font-medium text-gray-600 bg-gray-100 rounded-md ">
-                <Lock className="w-3 h-3" />
-                <span>Login to see Deep analytics</span>
-              </div>
-            )}
+            {/* View Video Analytics Button */}
+            <Button className="w-full" variant="default">
+              <BarChart2 size={16} className="mr-2" />
+              View Video Analytics
+            </Button>
           </div>
 
-          {/* Private Data - Duration */}
-          <div className='flex justify-between items-center'>
-            <h5>Average watched duration</h5>
-            {video.privateStats ? (
-              // Jika Login: Tampilkan Angka
-              <span>{formatDuration(video.privateStats.averageViewDuration)}</span>
-            ) : (
-              // Jika Belum Login: Tampilkan Badge
-              <div className="flex items-center gap-1.5 px-2 py-1 text-[10px] font-medium text-gray-600 bg-gray-100 rounded-md ">
-                <Lock className="w-3 h-3" />
-                <span>Login to see Deep analytics</span>
-              </div>
-            )}
-          </div>
-        </div>
-
-          {/* 2. List Komentar */}
+          {/* Right: Latest Comments */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-5">Komentar Terbaru</h3>
-            
-            {/* Logic: Cek apakah ada komentar atau tidak */}
-            <div className="flow-root">
-              {comments && comments.length > 0 ? (
-                <>
-                  <ul className="-my-4 divide-y divide-gray-100">
-                    {/* Looping data komentar langsung disini */}
-                    {comments.map((comment: any) => (
-                      <li key={comment.id} className="flex gap-x-4 py-4">
-                        {/* Avatar User */}
-                        <img 
-                          className="h-10 w-10 flex-none rounded-full bg-gray-50 object-cover" 
-                          src={comment.imageUrl} 
-                          alt={comment.name} 
-                        />
-                        {/* Isi Komentar */}
-                        <div className="flex-auto">
-                          <div className="flex justify-between gap-x-4">
-                            <h4 className="text-sm font-semibold text-gray-900">{comment.name}</h4>
-                            <p className="text-xs text-gray-500">{comment.date}</p>
-                          </div>
-                          <p className="mt-1 text-sm text-gray-600">{comment.content}</p>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
+            <h3 className="text-base font-semibold text-gray-900 mb-4">Latest Comments</h3>
 
-                  {/* Tombol View All */}
-                  <div className="mt-6">
-                    <button className="w-full rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                  
-                      View all comments
-                    </button>
+            <div className="space-y-4">
+              {video.comments?.slice(0, 3).map((comment: any) => (
+                <div key={comment.id} className="flex gap-3">
+                  <img
+                    src={comment.imageUrl}
+                    alt={comment.name}
+                    className="w-10 h-10 rounded-full flex-shrink-0 object-cover"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <h4 className="text-sm font-semibold text-gray-900">{comment.name}</h4>
+                      <p className="text-xs text-gray-500 flex-shrink-0">{comment.date}</p>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-1 line-clamp-2">{comment.content}</p>
+
+                    <div className="flex items-center gap-3 mt-2 text-xs text-gray-500">
+                      <Button variant="ghost" size="sm" className="h-auto p-0 hover:text-gray-700">
+                        <ThumbsUp size={12} className="mr-1" />
+                        {comment.likeCount || 0}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        asChild
+                        className="h-auto p-0 hover:text-gray-700"
+                      >
+                        <a
+                          href={`https://www.youtube.com/watch?v=${video.id.videoId || video.id}&lc=${comment.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Reply
+                        </a>
+                      </Button>
+                    </div>
                   </div>
-                </>
-              ) : (
-                // Tampilan jika tidak ada komentar
-                <p className="text-gray-500 text-sm">Tidak ada komentar.</p>
-              )}
+                </div>
+              )) || (
+                  <p className="text-sm text-gray-500 text-center py-4">No comments yet</p>
+                )}
             </div>
           </div>
-
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

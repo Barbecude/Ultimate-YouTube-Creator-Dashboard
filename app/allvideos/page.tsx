@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { useChannel } from "@/app/context/ChannelContext";
 import Image from "next/image";
 import Link from "next/link";
+import { PageHeader } from "@/components/ui/page-header";
 
 export default function AllVideosPage() {
     const { channelId } = useChannel();
@@ -88,16 +89,13 @@ export default function AllVideosPage() {
     }, [hasMore, loadingMore, loading, fetchVideos]);
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
-            <div className="max-w-7xl mx-auto">
-                {/* Header */}
-                <div className="mb-8">
-                    <Link href="/" className="text-blue-600 hover:text-blue-800 mb-4 inline-block">
-                        ← Back to Dashboard
-                    </Link>
-                    <h1 className="text-4xl font-bold text-gray-900 mb-2">All Videos</h1>
-                    <p className="text-gray-600">Recent videos from your channel</p>
-                </div>
+ 
+            <div className="mx-auto">
+                {/* Header Section */}
+                <PageHeader 
+                title="All Videos" 
+                description="All videos from your channel" 
+                />
 
                 {/* Loading State */}
                 {loading && (
@@ -218,6 +216,6 @@ export default function AllVideosPage() {
                     </div>
                 )}
             </div>
-        </div>
+     
     );
 }

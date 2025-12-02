@@ -96,7 +96,7 @@ export async function getVideoStatistics(videoIds: string[]) {
 }
 
 export async function getComments(videoId: string) {
-  const url = `https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&maxResults=3&key=${API_KEY}`;
+  const url = `https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${videoId}&maxResults=5&key=${API_KEY}`;
 
   try {
     const res = await fetch(url, { next: { revalidate: 3600 } });

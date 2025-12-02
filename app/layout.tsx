@@ -32,8 +32,8 @@ export default function RootLayout({
             <Sidebar />
 
             {/* Right Content Area */}
-            <main className="flex-1 overflow-y-auto">
-              <div className="p-8">
+            <main className="flex-1 bg-gray-50 overflow-y-auto">
+              <div className="p-6">
                 {children}
               </div>
             </main>
