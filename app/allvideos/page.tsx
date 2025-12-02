@@ -3,8 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useChannel } from "@/app/context/ChannelContext";
 import Image from "next/image";
-import Link from "next/link";
-import { PageHeader } from "@/components/ui/page-header";
+
 
 export default function AllVideosPage() {
     const { channelId } = useChannel();
@@ -91,12 +90,6 @@ export default function AllVideosPage() {
     return (
  
             <div className="mx-auto">
-                {/* Header Section */}
-                <PageHeader 
-                title="All Videos" 
-                description="All videos from your channel" 
-                />
-
                 {/* Loading State */}
                 {loading && (
                     <div className="text-center py-12">

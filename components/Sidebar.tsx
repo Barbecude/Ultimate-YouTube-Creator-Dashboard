@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useChannel } from "@/app/context/ChannelContext";
 import { useEffect, useState } from "react";
+import { signOut } from "next-auth/react";
+import { useGithubStars } from "@/hooks/useGithubStars";
 import { LayoutGrid, Server, Activity, Globe, BarChart3, Settings, LogOut, Github, Star, ExternalLink } from "lucide-react";
 
 interface ChannelInfo {
@@ -56,7 +58,7 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-[280px] h-screen bg-gray-50/50 border-r border-gray-200 flex flex-col sticky top-0">
+    <aside className="w-[280px] h-screen border-r border-gray-200 flex flex-col sticky top-0">
 
       {/* 1. Profile Section */}
       <div className="p-4 mb-2 border-b border-gray-200">
@@ -156,6 +158,7 @@ export function Sidebar() {
 
         {/* Logout */}
         <button
+          onClick={() => signOut()}
           className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors text-left"
 
         >

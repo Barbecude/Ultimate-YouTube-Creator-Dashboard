@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "../components/Providers";
 import { Sidebar } from "../components/Sidebar"; // Import the sidebar
+import { Navbar } from "../components/Navbar"; // Import the navbar
 
 const inter = Inter({
   variable: "--font-inter-sans",
@@ -33,6 +34,10 @@ export default function RootLayout({
 
             {/* Right Content Area */}
             <main className="flex-1 bg-gray-50 overflow-y-auto">
+              {/* Navbar */}
+              <Navbar />
+
+              {/* Page Content */}
               <div className="p-6">
                 {children}
               </div>
