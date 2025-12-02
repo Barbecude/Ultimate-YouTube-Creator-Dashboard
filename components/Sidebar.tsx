@@ -7,7 +7,7 @@ import { useChannel } from "@/app/context/ChannelContext";
 import { useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
 import { useGithubStars } from "@/hooks/useGithubStars";
-import { LayoutGrid, Server, Activity, Globe, BarChart3, Settings, LogOut, Github, Star, ExternalLink } from "lucide-react";
+import { LayoutGrid, Server, Activity, Globe, BarChart3, Settings, LogOut, Github, Star, ExternalLink, Brush, ListVideo } from "lucide-react";
 
 interface ChannelInfo {
   title: string;
@@ -114,15 +114,15 @@ export function Sidebar() {
         <div>
           <nav className="space-y-0.5">
             <NavItem href="/" icon={<LayoutGrid size={18} />} label="Overview" active={pathname === "/"} />
-            <NavItem href="/allvideos" icon={<Server size={18} />} label="All Videos" active={pathname === "/allvideos"} />
-            <NavItem href="/analytics" icon={<Activity size={18} />} label="Deep Analytics" active={pathname === "/analytics"} />
-            <NavItem href="/customize" icon={<Globe size={18} />} label="Customize Channel" active={pathname === "/customize"} />
-            <NavItem href="/revenue" icon={<BarChart3 size={18} />} label="Revenue" active={pathname === "/revenue"} />
+            <NavItem href="/allvideos" icon={<ListVideo size={18} />} label="All Videos" active={pathname === "/allvideos"} />
+            {/* <NavItem href="/analytics" icon={<Activity size={18} />} label="Deep Analytics" active={pathname === "/analytics"} /> */}
+            <NavItem href="/customize" icon={<Brush size={18} />} label="Customize Channel" active={pathname === "/customize"} />
+            {/* <NavItem href="/revenue" icon={<BarChart3 size={18} />} label="Revenue" active={pathname === "/revenue"} /> */}
           </nav>
         </div>
 
         {/* 3. Teams Section */}
-        <div>
+        {/* <div>
           <h3 className="px-3 text-xs font-semibold text-gray-500 tracking-wider mb-2">
             Your Channels
           </h3>
@@ -131,7 +131,7 @@ export function Sidebar() {
             <TeamItem name="PewDiePie" initial="D" />
             <TeamItem name="Logan Paul" initial="L" />
           </div>
-        </div>
+        </div> */}
 
       </div>
       <div className="p-3 border-t border-gray-200 mt-auto space-y-1">
@@ -154,7 +154,7 @@ export function Sidebar() {
         </Link>
 
         {/* Settings (Moved here) */}
-        <NavItem href="/settings" icon={<Settings size={18} />} label="Settings" active={pathname === "/settings"} />
+        {/* <NavItem href="/settings" icon={<Settings size={18} />} label="Settings" active={pathname === "/settings"} /> */}
 
         {/* Logout */}
         <button

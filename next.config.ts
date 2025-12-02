@@ -10,6 +10,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/vi/**', // Sesuaikan jika perlu
       },
+      {
+        protocol: 'https',
+        hostname: 'yt3.googleusercontent.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };

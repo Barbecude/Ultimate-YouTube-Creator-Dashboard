@@ -6,11 +6,15 @@ import { MessageSquare, ThumbsUp, BarChart2, Eye } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
+import { useChannel } from "@/app/context/ChannelContext";
+
 interface PopularVideoCardProps {
   video: any;
 }
 
 export default function PopularVideoCard({ video }: PopularVideoCardProps) {
+  const { timeRange } = useChannel();
+
   if (!video) return null;
 
   const snippet = video.snippet;
@@ -21,7 +25,7 @@ export default function PopularVideoCard({ video }: PopularVideoCardProps) {
     <Card>
       <CardHeader>
         <CardTitle>Popular Video</CardTitle>
-        <CardDescription>for the last 7 days</CardDescription>
+        <CardDescription>Last {timeRange}</CardDescription>
       </CardHeader>
 
       <CardContent>

@@ -132,11 +132,11 @@ export function DashboardWrapper({ initialData, defaultChannelId }: DashboardWra
           <Card>
             <CardHeader>
               <CardTitle>Channel Views</CardTitle>
-              <CardDescription>Last 28 Days</CardDescription>
+              <CardDescription>Last {timeRange}</CardDescription>
             </CardHeader>
             <CardContent>
               {session?.accessToken ? (
-                <AnalyticsChart data={data.analyticsData} />
+                <AnalyticsChart data={data.analyticsData} timeRange={timeRange} />
               ) : (
                 <div className="p-10 text-center text-muted-foreground">🔒 Login to see analytics</div>
               )}
@@ -149,7 +149,7 @@ export function DashboardWrapper({ initialData, defaultChannelId }: DashboardWra
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Recent Videos</CardTitle>
-              <Button variant="link" asChild className="h-auto p-0">
+              <Button variant="link" asChild className="h-auto p-0 text-blue-600 hover:text-blue-800">
                 <a href="/allvideos">View all</a>
               </Button>
             </div>

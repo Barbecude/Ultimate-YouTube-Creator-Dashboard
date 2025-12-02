@@ -138,7 +138,7 @@ export function Navbar() {
                                                 setTimeRange(range);
                                                 setShowTimeDropdown(false);
                                             }}
-                                            className={`w-full text-left px-3 py-2 text-sm rounded transition-colors ${timeRange === range
+                                            className={`w-full text-left px-3 py-1.5 text-sm rounded transition-colors ${timeRange === range
                                                 ? 'bg-gray-100 text-gray-900 font-medium'
                                                 : 'text-gray-700 hover:bg-gray-50'
                                                 }`}

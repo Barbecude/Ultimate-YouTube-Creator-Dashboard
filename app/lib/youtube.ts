@@ -176,3 +176,122 @@ export async function enrichVideosWithDetails(rawVideos: RawVideo[]): Promise<En
     };
   });
 }
+
+// ============================================
+// CHANNEL MANAGEMENT (Authenticated)
+// ============================================
+
+/**
+ * Fetch detailed channel information including branding settings
+ * Requires authenticated access token
+ */
+export async function getChannelDetails(channelId: string, accessToken: string) {
+  const url = `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,brandingSettings&id=${channelId}`;
+
+  const res = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    cache: 'no-store' // Don't cache for channel settings
+  });
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch channel details');
+  }
+
+  const data = await res.json();
+
+  if (!data.items || data.items.length === 0) {
+    throw new Error('Channel not found');
+  }
+
+  return data.items[0];
+}
+
+/**
+ * Upload a banner image to YouTube
+ * Returns the URL of the uploaded banner
+ */
+export async function uploadChannelBanner(
+  imageData: string | ArrayBuffer,
+  accessToken: string
+): Promise<string> {
+  const url = 'https://www.googleapis.com/upload/youtube/v3/channelBanners/insert';
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'image/jpeg',
+    },
+    body: imageData,
+  });
+
+  if (!res.ok) {
+    const error = await res.text();
+    throw new Error(`Failed to upload banner: ${error}`);
+  }
+
+  const data = await res.json();
+  return data.url;
+}
+
+/**
+ * Update channel information (description, branding, etc.)
+ */
+export async function updateChannelInfo(
+  channelId: string,
+  updateData: {
+    description?: string;
+    bannerUrl?: string;
+    keywords?: string;
+    defaultLanguage?: string;
+    country?: string;
+  },
+  accessToken: string
+) {
+  const url = 'https://www.googleapis.com/youtube/v3/channels?part=brandingSettings';
+
+  const payload: any = {
+    id: channelId,
+    brandingSettings: {
+      channel: {},
+      image: {}
+    }
+  };
+
+  // Add channel description and metadata
+  if (updateData.description !== undefined) {
+    payload.brandingSettings.channel.description = updateData.description;
+  }
+  if (updateData.keywords !== undefined) {
+    payload.brandingSettings.channel.keywords = updateData.keywords;
+  }
+  if (updateData.defaultLanguage !== undefined) {
+    payload.brandingSettings.channel.defaultLanguage = updateData.defaultLanguage;
+  }
+  if (updateData.country !== undefined) {
+    payload.brandingSettings.channel.country = updateData.country;
+  }
+
+  // Add banner URL if provided
+  if (updateData.bannerUrl) {
+    payload.brandingSettings.image.bannerExternalUrl = updateData.bannerUrl;
+  }
+
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const error = await res.text();
+    throw new Error(`Failed to update channel: ${error}`);
+  }
+
+  return await res.json();
+}

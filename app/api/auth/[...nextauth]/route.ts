@@ -24,12 +24,12 @@ declare module "next-auth/jwt" {
 export const authOptions: AuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!, // Tanda seru (!) untuk yakin env ada
+      clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       authorization: {
         params: {
-          // Scope YouTube & Analytics sudah benar
-          scope: "openid email profile https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/yt-analytics.readonly https://www.googleapis.com/auth/yt-analytics-monetary.readonly",
+          // Updated scope to include write access for channel customization
+          scope: "openid email profile https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/yt-analytics.readonly https://www.googleapis.com/auth/yt-analytics-monetary.readonly",
           prompt: "consent",
           access_type: "offline",
           response_type: "code"

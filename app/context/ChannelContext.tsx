@@ -20,28 +20,27 @@ const STORAGE_KEY_CHANNEL_NAME = 'youtube_dashboard_channel_name';
 const STORAGE_KEY_TIME_RANGE = 'youtube_dashboard_time_range';
 
 export function ChannelProvider({ children, initialChannelId }: { children: ReactNode; initialChannelId: string }) {
-  // Initialize state from localStorage or use initialChannelId
-  const [channelId, setChannelIdState] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem(STORAGE_KEY_CHANNEL_ID);
-      return stored || initialChannelId;
-    }
-    return initialChannelId;
-  });
+  // Initialize state with defaults to avoid hydration mismatch
+  const [channelId, setChannelIdState] = useState(initialChannelId);
+  const [channelName, setChannelNameState] = useState('');
+  const [timeRange, setTimeRangeState] = useState<TimeRange>('Lifetime');
 
-  const [channelName, setChannelNameState] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem(STORAGE_KEY_CHANNEL_NAME) || '';
+  useEffect(() => {
+    const storedChannelId = localStorage.getItem(STORAGE_KEY_CHANNEL_ID);
+    if (storedChannelId) {
+      setChannelIdState(storedChannelId);
     }
-    return '';
-  });
 
-  const [timeRange, setTimeRangeState] = useState<TimeRange>(() => {
-    if (typeof window !== 'undefined') {
-      return (localStorage.getItem(STORAGE_KEY_TIME_RANGE) as TimeRange) || 'Lifetime';
+    const storedChannelName = localStorage.getItem(STORAGE_KEY_CHANNEL_NAME);
+    if (storedChannelName) {
+      setChannelNameState(storedChannelName);
     }
-    return 'Lifetime';
-  });
+
+    const storedTimeRange = localStorage.getItem(STORAGE_KEY_TIME_RANGE) as TimeRange;
+    if (storedTimeRange) {
+      setTimeRangeState(storedTimeRange);
+    }
+  }, []);
 
   // Wrapper functions to sync with localStorage
   const setChannelId = (id: string) => {

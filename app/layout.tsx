@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "../components/Providers";
 import { Sidebar } from "../components/Sidebar"; // Import the sidebar
 import { Navbar } from "../components/Navbar"; // Import the navbar
+import { Toaster } from "../components/ui/toaster";
 
 const inter = Inter({
   variable: "--font-inter-sans",
@@ -24,7 +25,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${inter.variable} antialiased font-sans bg-white`}>
+      <body className={`${inter.variable} ${inter.className} antialiased font-sans bg-white`}>
         <Providers initialChannelId={defaultChannelId}>
           {/* Main Flex Container */}
           <div className="flex h-screen overflow-hidden">
@@ -44,6 +45,7 @@ export default function RootLayout({
             </main>
 
           </div>
+          <Toaster />
         </Providers>
       </body>
     </html>

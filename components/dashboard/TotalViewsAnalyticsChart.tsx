@@ -10,12 +10,15 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
+
+import { Eye } from 'lucide-react';
 interface AnalyticsData {
   date: string;
   views: number;
 }
 
 interface AnalyticsChartProps {
+  timeRange?: string;
   data: AnalyticsData[];
 }
 
@@ -41,7 +44,7 @@ const formatDateTooltip = (dateStr: string) => {
   return new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }).format(date);
 };
 
-const AnalyticsChart = ({ data }: AnalyticsChartProps) => {
+const AnalyticsChart = ({ data, timeRange = '28 days' }: AnalyticsChartProps) => {
   // Handle jika data kosong agar tidak crash
   if (!data || data.length === 0) {
     return (
@@ -54,10 +57,24 @@ const AnalyticsChart = ({ data }: AnalyticsChartProps) => {
   return (
     <div className="w-full bg-white p-6 rounded-xl border border-gray-200 shadow-xs">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-lg font-bold text-gray-800">Performa Channel</h3>
+        <div>
+          <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+            Views Performance
+          </h3>
+          <p className="text-sm text-gray-500 flex items-center gap-2">
+            Updated in Realtime
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+            </span>
+          </p>
+        </div>
         {/* Indikator total views sederhana */}
         <div className="text-right">
-          <p className="text-xs text-gray-500 uppercase tracking-wider">Total Periode Ini</p>
+          <div className='flex justify-end items-center gap-1'>
+          <Eye className="w-4 h-4 text-gray-400" />
+          <p className="text-sm text-gray-500">Views</p>
+          </div>
           <p className="text-xl font-bold text-gray-900">
             {new Intl.NumberFormat('id-ID').format(
               data.reduce((acc, curr) => acc + (Number(curr.views) || 0), 0)
@@ -79,11 +96,11 @@ const AnalyticsChart = ({ data }: AnalyticsChartProps) => {
                 <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
               </linearGradient>
             </defs>
-            
+
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-            
-            <XAxis 
-              dataKey="date" 
+
+            <XAxis
+              dataKey="date"
               tickFormatter={formatDateAxis}
               tick={{ fill: '#6b7280', fontSize: 12 }}
               axisLine={false}
@@ -91,8 +108,8 @@ const AnalyticsChart = ({ data }: AnalyticsChartProps) => {
               dy={10}
               minTickGap={30} // Agar tanggal tidak tumpang tindih
             />
-            
-            <YAxis 
+
+            <YAxis
               tickFormatter={formatCompactNumber}
               tick={{ fill: '#6b7280', fontSize: 12 }}
               axisLine={false}
